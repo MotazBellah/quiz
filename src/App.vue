@@ -42,7 +42,7 @@ export default {
   },
   methods: {
       next() {
-          this.index ++
+          this.index++
       },
       increment(isCorrect) {
          if (isCorrect) {

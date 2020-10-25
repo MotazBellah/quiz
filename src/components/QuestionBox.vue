@@ -8,10 +8,14 @@
             <hr class="my-4">
 
             <b-list-group
-                v-for="(answer, index) in answers"
+                v-for="(answer, index) in shuffledAnswers"
                 :key="index"
                 @click="selectAnswer(index)"
-                :class="[selectedIndex === index ? 'selected' : '']"
+                :class="[
+                    !answered && selectedIndex === index ? 'selected' :
+                    answered && correctIndex === index ? 'correct' :
+                    answered && selectedIndex === index && correctIndex !== index ? 'incorrect' : ''
+                ]"
             >
               <b-list-group-item>{{ answer }}</b-list-group-item>
             </b-list-group>
@@ -54,10 +58,13 @@
             }
         },
         watch: {
-            currentQuestion() {
-                this.selectedIndex = null
-                this.answered = false
-                this.shuffleAnswers()
+            currentQuestion: {
+                immediate: true,
+                handler(){
+                    this.selectedIndex = null
+                    this.answered = false
+                    this.shuffleAnswers()
+                }
             }
         },
         methods: {
@@ -66,13 +73,20 @@
 
             },
             shuffleAnswers() {
-                let answers = [...this.currentQuestion.incorrect_answers + this.currentQuestion.correct_answer]
+                let answers = [...this.currentQuestion.incorrect_answers, this.currentQuestion.correct_answer]
+                console.log(answers);
                 this.shuffledAnswers = _.shuffle(answers)
-                this.correctIndex = this.shuffleAnswers.indexOf(this.currentQuestion.correct_answer)
+
+                this.correctIndex = this.shuffledAnswers.indexOf(this.currentQuestion.correct_answer)
             },
             submitAnswer() {
                 let isCorrect = false
-
+                console.log(this.selectedIndex);
+                console.log(this.correctIndex);
+                console.log(this.shuffledAnswers);
+                // if (this.shuffledAnswers[this.selectedIndex] === this.currentQuestion.correct_answer) {
+                //     isCorrect = true
+                // }
                 if (this.selectedIndex === this.correctIndex) {
                     isCorrect = true
                 }
@@ -81,9 +95,7 @@
 
             }
         },
-        mounted() {
-            this.shuffleAnswers()
-        }
+
     };
 </script>
 
@@ -102,11 +114,16 @@
     .selected {
         background-color: blue;
         color: blue;
+        font-weight: bold;
     }
     .correct {
         background-color: green;
+        color: green;
+        font-weight: bold;
     }
     .incorrect {
         background-color: red;
+        color: red;
+        font-weight: bold;
     }
 </style>

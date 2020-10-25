@@ -43,6 +43,11 @@ export default {
   methods: {
       next() {
           this.index++
+
+          if (this.index >= 10) {
+              alert("You got " + this.numCorrect + " out of 10")
+              location.reload()
+          }
       },
       increment(isCorrect) {
          if (isCorrect) {

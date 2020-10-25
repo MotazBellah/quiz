@@ -24,6 +24,8 @@
 </template>
 
 <script>
+    import  _ from 'lodash'
+
     export default {
         props: {
             currentQuestion: Object,
@@ -31,7 +33,8 @@
         },
         data() {
             return {
-                selectedIndex: null
+                selectedIndex: null,
+                shuffledAnswers: []
             }
         },
         computed: {
@@ -41,11 +44,25 @@
                 return answers
             }
         },
+        watch: {
+            currentQuestion() {
+                this.selectedIndex = null
+                this.shuffleAnswers()
+            }
+        },
         methods: {
             selectAnswer(index) {
                 this.selectedIndex = index
 
+            },
+            shuffleAnswers() {
+                let answers = [...this.currentQuestion.incorrect_answers + this.currentQuestion.correct_answer]
+                this.shuffledAnswers = _.shuffle(answers)
+
             }
+        },
+        mounted() {
+            this.shuffleAnswers()
         }
     };
 </script>
